@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Google Ads — Suprema Farma · Agosto 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f172a; min-height: 100vh; }
+
+  .tab-bar {
+    position: sticky; top: 0; z-index: 1000;
+    background: #0f172a;
+    display: flex; gap: 4px; padding: 10px 16px 0;
+    border-bottom: 2px solid #1e293b;
+    overflow-x: auto; scrollbar-width: thin;
+  }
+  .tab-bar::-webkit-scrollbar { height: 4px; }
+  .tab-bar::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
+
+  .tab-btn {
+    background: transparent; border: none;
+    border-bottom: 3px solid transparent;
+    color: #94a3b8; font-size: 13px; font-weight: 600;
+    padding: 10px 18px 12px; cursor: pointer;
+    white-space: nowrap; transition: color .15s, border-color .15s;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  .tab-btn:hover { color: #e2e8f0; }
+  .tab-btn.active { color: white; border-bottom-color: var(--accent, #6366f1); }
+
+  .tab-pane { background: #f4f6f9; min-height: calc(100vh - 52px); display: none; }
+</style>
+</head>
+<body>
+
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="0" style="--accent:#1b4332">📊 Visão Geral</button>
+  <button class="tab-btn" data-tab="1" style="--accent:#4c1d95">⚡ PMax</button>
+  <button class="tab-btn" data-tab="2" style="--accent:#1e40af">🔍 Search</button>
+  <button class="tab-btn" data-tab="3" style="--accent:#b45309">📋 Histórico</button>
+  <button class="tab-btn" data-tab="4" style="--accent:#1877f2">📘 Meta Ads</button>
+</div>
+
+<!-- ═══ TAB 0: VISÃO GERAL ═══ -->
+<div class="tab-pane" id="tab-0" style="display:block;">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; }
+  .header { background: linear-gradient(135deg, #0d1b2a 0%, #1b4332 100%); color: white; padding: 36px 48px; }
+  .header h1 { font-size: 26px; font-weight: 700; }
+  .header p { font-size: 13px; color: #adb5bd; margin-top: 6px; }
+  .header .badge { display: inline-block; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 14px; font-size: 12px; margin-top: 12px; margin-right: 8px; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+  .kpi { background: white; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,.07); border-top: 3px solid #1b4332; }
+  .kpi .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #6c757d; font-weight: 600; }
+  .kpi .value { font-size: 28px; font-weight: 700; color: #0d1b2a; margin-top: 6px; line-height: 1; }
+  .kpi .sub { font-size: 12px; color: #6c757d; margin-top: 4px; }
+  .section { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,.07); margin-bottom: 24px; }
+  .section-title { font-size: 16px; font-weight: 700; color: #0d1b2a; margin-bottom: 4px; }
+  .section-sub { font-size: 12px; color: #6c757d; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: #f8f9fa; text-align: left; padding: 10px 12px; font-size: 11px; text-transform: uppercase; color: #6c757d; font-weight: 600; border-bottom: 2px solid #e9ecef; }
+  td { padding: 10px 12px; border-bottom: 1px solid #f1f3f5; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f8fffe; }
+  .alert { border-radius: 8px; padding: 14px 18px; margin-bottom: 12px; font-size: 13px; display: flex; gap: 10px; align-items: flex-start; }
+  .alert-warn { background: #fffbeb; border-left: 3px solid #f59e0b; color: #78350f; }
+  .alert-good { background: #f0fdf4; border-left: 3px solid #22c55e; color: #14532d; }
+  .alert-info { background: #eff6ff; border-left: 3px solid #3b82f6; color: #1e3a5f; }
+  .alert-bad  { background: #fef2f2; border-left: 3px solid #ef4444; color: #7f1d1d; }
+  .alert-icon { font-size: 16px; line-height: 1; }
+  .alert strong { display: block; margin-bottom: 2px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .badge-green { background: #d1fae5; color: #065f46; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-yellow { background: #fef9c3; color: #854d0e; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-red { background: #fee2e2; color: #991b1b; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-blue { background: #dbeafe; color: #1e40af; padding: 2px 10px; border-radius: 20px; font-size: 11px; }
+  .badge-purple { background: #ede9fe; color: #5b21b6; padding: 2px 10px; border-radius: 20px; font-size: 11px; }
+  .badge-gray { background: #f3f4f6; color: #374151; padding: 2px 10px; border-radius: 20px; font-size: 11px; }
+  .insight-box { border-radius: 8px; padding: 14px 18px; margin-bottom: 10px; font-size: 13px; border-left: 4px solid; }
+  .insight-ok { background: #f0fdf4; border-color: #22c55e; color: #14532d; }
+  .insight-warn { background: #fffbeb; border-color: #f59e0b; color: #92400e; }
+  .insight-alert { background: #fef2f2; border-color: #ef4444; color: #991b1b; }
+  .insight-info { background: #eff6ff; border-color: #3b82f6; color: #1e40af; }
+  @media (max-width: 768px) { .kpi-grid { grid-template-columns: repeat(2,1fr); } .two-col { grid-template-columns: 1fr; } }
+</style>
+
+<div class="header">
+  <h1>📊 Relatório Google Ads — Suprema Farma</h1>
+  <p>Conta: SUPREMA 2 (230-831-1849) · Agosto 2026</p>
+  <span class="badge">01 a 03 de agosto de 2026</span>
+  <span class="badge">Dados preliminares — 3 dias (03/08 ainda parcial)</span>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <div class="section-title">KPIs do Período (01–03/Ago)</div>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="label">Investimento</div><div class="value">R$143,93</div><div class="sub">PMax R$57,12 · Search R$86,81</div></div>
+      <div class="kpi"><div class="label">Impressões</div><div class="value">3.393</div><div class="sub">PMax 2.828 · Search 565</div></div>
+      <div class="kpi"><div class="label">Cliques</div><div class="value">284</div><div class="sub">PMax 253 · Search 31</div></div>
+      <div class="kpi"><div class="label">Conversões</div><div class="value">20,99</div><div class="sub">PMax 12,99 · Search 8,00</div></div>
+      <div class="kpi"><div class="label">CPConv Geral</div><div class="value">R$6,86</div><div class="sub">PMax R$4,40 · Search R$10,85</div></div>
+      <div class="kpi"><div class="label">CTR Geral</div><div class="value">8,37%</div><div class="sub">PMax 8,95% · Search 5,49%</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Observações Prioritárias</div>
+    <div class="insight-box insight-info">ℹ️ <strong>Início de mês, ainda com poucos dias de dados</strong> (01–03/08) — os números de 03/08 (hoje) ainda são parciais e podem sofrer ajustes de atribuição do Google Ads nos próximos dias, como costuma acontecer nos primeiros dias após cada evento.</div>
+    <div class="insight-box insight-ok">✅ <strong>PMax segue com CPConv baixo (R$4,40)</strong>, puxado pelo "Grupo de recursos 27.07.2026" — o asset group com os criativos de imunidade que Felipe adicionou em 27/07 — que já responde por 89% das impressões e 69% das conversões do PMax neste início de agosto.</div>
+    <div class="insight-box insight-warn">💡 <strong>03/08 (hoje, parcial) mostra o Search com investimento bem mais alto</strong> que os dois dias anteriores: R$71,61 investidos, contra R$5,76 (01/08) e R$9,44 (02/08). Impressões e cliques também subiram bastante (388 impressões, 22 cliques, vs 63–114 impressões nos dias anteriores). Isso coincide com a ativação dos parceiros de pesquisa (Search Network) que Felipe fez em 29/07 — vale acompanhar se a eficiência (CPConv R$17,90 hoje) se estabiliza quando o dia fechar e a atribuição terminar de processar.</div>
+    <div class="insight-box insight-ok">✅ <strong>Termos de busca geolocalizados seguem convertendo bem</strong>: "farmácia de manipulação em suzano" (2 cliques, 1 conversão, CPConv R$4,70) e "farmacia de manipulação osasco" (2 cliques, 1 conversão, CPConv R$5,36) já converteram neste início de agosto — mesmo padrão eficiente de cauda longa geográfica observado em julho.</div>
+    <div class="insight-box insight-info">ℹ️ <strong>Nenhuma alteração registrada na conta em agosto até agora</strong>. A última mudança foi em 29/07 — Felipe ativou os parceiros de pesquisa (Search Network) na campanha Search e adicionou um novo criativo de imagem. Ver aba Histórico para detalhes.</div>
+    <div class="insight-box insight-info">ℹ️ Relatório cobre os 3 primeiros dias de agosto (01–03/08). Ainda é cedo para comparar com o ritmo de julho (média de 9,74 conversões/dia) — os próximos dias vão confirmar se o mês segue no mesmo patamar.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Performance por Campanha</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Campanha</th><th>Tipo</th><th>Impressões</th><th>Cliques</th><th>CTR</th><th>Custo</th><th>Conv.</th><th>CPConv</th><th>CPC</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>SUPREMA 2 — PMax</strong></td>
+            <td><span class="badge badge-purple">PMax</span></td>
+            <td>2.828</td><td>253</td><td>8,95%</td><td>R$57,12</td>
+            <td><strong>12,99</strong></td><td><span class="badge badge-green">R$4,40</span></td><td>R$0,23</td>
+          </tr>
+          <tr>
+            <td><strong>SUPREMA 2 — Search</strong></td>
+            <td><span class="badge badge-blue">Search</span></td>
+            <td>565</td><td>31</td><td>5,49%</td><td>R$86,81</td>
+            <td><strong>8,00</strong></td><td><span class="badge badge-yellow">R$10,85</span></td><td>R$2,80</td>
+          </tr>
+          <tr style="background:#f8fafc;font-weight:700">
+            <td>TOTAL</td><td>—</td><td>3.393</td><td>284</td><td>8,37%</td><td>R$143,93</td><td>20,99</td><td>R$6,86</td><td>R$0,51</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Performance por Grupo de Anúncio (Search)</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Grupo</th><th>Campanha</th><th>Impressões</th><th>Cliques</th><th>CTR</th><th>Custo</th><th>Conv.</th><th>CPConv</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Produtos Manipulados</strong></td><td>Search</td>
+            <td>381</td><td>15</td><td>3,94%</td><td>R$37,75</td><td>3,50</td>
+            <td><span class="badge badge-yellow">R$10,79</span></td>
+          </tr>
+          <tr>
+            <td><strong>Long tail</strong></td><td>Search</td>
+            <td>184</td><td>16</td><td>8,70%</td><td>R$49,06</td><td>4,50</td>
+            <td><span class="badge badge-yellow">R$10,90</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="insight-box insight-info" style="margin-top:12px">ℹ️ Com apenas 3 dias de dados, os dois grupos seguem com CPConv bem próximo (R$10,79 e R$10,90) — ainda é cedo para apontar diferença relevante de eficiência entre eles neste início de mês.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Top Keywords</div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Keyword</th><th>Grupo</th><th>Tipo</th><th>Imp.</th><th>Cliques</th><th>Custo</th><th>Conv.</th><th>CPC</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>farmácia de manipulação</strong></td><td>Produtos Manipulados</td>
+            <td><span class="badge badge-blue">PHRASE</span></td>
+            <td>326</td><td>12</td><td>R$31,20</td><td>3,5</td><td>R$2,60</td>
+          </tr>
+          <tr>
+            <td><strong>fórmula manipulada para energia e disposição</strong></td><td>Long tail</td>
+            <td><span class="badge badge-gray">BROAD</span></td>
+            <td>184</td><td>16</td><td>R$49,06</td><td>4,5</td><td>R$3,07</td>
+          </tr>
+          <tr>
+            <td>farmácia de manipulação perto de mim</td><td>Produtos Manipulados</td>
+            <td><span class="badge badge-blue">PHRASE</span></td>
+            <td>15</td><td>1</td><td>R$3,56</td><td>1,0</td><td>R$3,56</td>
+          </tr>
+          <tr>
+            <td>suplementos para qualidade de vida</td><td>Produtos Manipulados</td>
+            <td><span class="badge badge-blue">PHRASE</span></td>
+            <td>36</td><td>2</td><td>R$2,99</td><td>0,0</td><td>R$1,50</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="insight-box insight-ok" style="margin-top:12px">✅ <strong>"farmácia de manipulação perto de mim"</strong> converteu com apenas R$3,56 investidos (1 clique, 1 conversão) — o melhor CPConv entre as keywords ativas neste início de mês, ainda que com volume baixo.</div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+</div><!-- /tab-0 -->
+
+<!-- ═══ TAB 1: PMAX ═══ -->
+<div class="tab-pane" id="tab-1" style="display:none;">
+<style>
+  #tab-1 * { box-sizing: border-box; }
+  #tab-1 .header { background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%); color: white; padding: 36px 48px; }
+  #tab-1 .header h1 { font-size: 26px; font-weight: 700; }
+  #tab-1 .header p { font-size: 13px; color: #c4b5fd; margin-top: 6px; }
+  #tab-1 .header .badge { display: inline-block; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 14px; font-size: 12px; margin-top: 12px; margin-right: 8px; }
+  #tab-1 .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+  #tab-1 .section { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,.07); margin-bottom: 24px; }
+  #tab-1 .section-title { font-size: 16px; font-weight: 700; color: #0d1b2a; margin-bottom: 4px; }
+  #tab-1 .section-sub { font-size: 12px; color: #6c757d; margin-bottom: 20px; }
+  #tab-1 .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 28px; }
+  #tab-1 .kpi { background: white; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,.07); border-top: 3px solid #4c1d95; }
+  #tab-1 .kpi .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #6c757d; font-weight: 600; }
+  #tab-1 .kpi .value { font-size: 28px; font-weight: 700; color: #0d1b2a; margin-top: 6px; line-height: 1; }
+  #tab-1 .kpi .sub { font-size: 12px; color: #6c757d; margin-top: 4px; }
+  #tab-1 table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  #tab-1 th { background: #f8f9fa; text-align: left; padding: 10px 12px; font-size: 11px; text-transform: uppercase; color: #6c757d; font-weight: 600; border-bottom: 2px solid #e9ecef; }
+  #tab-1 td { padding: 10px 12px; border-bottom: 1px solid #f1f3f5; vertical-align: middle; }
+  #tab-1 tr:last-child td { border-bottom: none; }
+  #tab-1 tr:hover td { background: #f5f3ff; }
+  #tab-1 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  #tab-1 .inner-nav { display: flex; gap: 8px; margin: 0 0 24px; background: #f3f4f6; padding: 6px; border-radius: 10px; width: fit-content; }
+  #tab-1 .inner-tab { padding: 8px 18px; font-size: 12px; font-weight: 600; border: none; background: none; cursor: pointer; color: #6b7280; border-radius: 7px; transition: all .2s; font-family: 'Segoe UI', sans-serif; }
+  #tab-1 .inner-tab.active { background: white; color: #4c1d95; box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+  #tab-1 .inner-pane { display: none; }
+  #tab-1 .inner-pane.active { display: block; }
+  #tab-1 .badge-green { background: #d1fae5; color: #065f46; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  #tab-1 .badge-yellow { background: #fef9c3; color: #854d0e; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  #tab-1 .badge-red { background: #fee2e2; color: #991b1b; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  #tab-1 .badge-blue { background: #dbeafe; color: #1e40af; padding: 2px 10px; border-radius: 20px; font-size: 11px; }
+  #tab-1 .badge-purple { background: #ede9fe; color: #5b21b6; padding: 2px 10px; border-radius: 20px; font-size: 11px; }
+  #tab-1 .badge-gray { background: #f3f4f6; color: #374151; padding: 2px 10px; border-radius: 20px; font-size: 11px; }
+  #tab-1 .insight-box { border-radius: 8px; padding: 14px 18px; margin-bottom: 10px; font-size: 13px; border-left: 4px solid; }
+  #tab-1 .insight-ok { background: #f0fdf4; border-color: #22c55e; color: #14532d; }
+  #tab-1 .insight-warn { background: #fffbeb; border-color: #f59e0b; color: #92400e; }
+  #tab-1 .insight-alert { background: #fef2f2; border-color: #ef4444; color: #991b1b; }
+  #tab-1 .insight-info { background: #eff6ff; border-color: #3b82f6; color: #1e40af; }
+</style>
+
+<div class="header">
+  <h1>⚡ PMax — Performance Agosto 2026</h1>
+  <p>Campanha: SUPREMA 2 — PMax · 01 a 03/08/2026</p>
+  <span class="badge">Budget: R$20/dia (desde 06/07)</span>
+  <span class="badge">12,99 conversões em 3 dias</span>
+</div>
+
+<div class="container">
+
+  <div class="inner-nav">
+    <button class="inner-tab active" data-inner="pmax-perf" onclick="switchInnerTab(this)">Performance</button>
+    <button class="inner-tab" data-inner="pmax-assets" onclick="switchInnerTab(this)">Assets</button>
+    <button class="inner-tab" data-inner="pmax-placements" onclick="switchInnerTab(this)">📍 Placements</button>
+  </div>
+
+  <div id="pane-pmax-perf" class="inner-pane active">
+
+    <div class="section">
+      <div class="section-title">KPIs PMax</div>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="label">Investimento</div><div class="value">R$57,12</div><div class="sub">39,7% do investimento total</div></div>
+        <div class="kpi"><div class="label">CPC Médio</div><div class="value">R$0,23</div><div class="sub">12,2× menor que Search</div></div>
+        <div class="kpi"><div class="label">Conversões</div><div class="value">12,99</div><div class="sub">61,9% de todas as conversões</div></div>
+        <div class="kpi"><div class="label">CPConv</div><div class="value">R$4,40</div><div class="sub">Em linha com o fechamento de julho (R$3,88)</div></div>
+        <div class="kpi"><div class="label">Impressões</div><div class="value">2.828</div><div class="sub">CTR 8,95%</div></div>
+        <div class="kpi"><div class="label">Taxa de Conv.</div><div class="value">5,1%</div><div class="sub">253 cliques → 12,99 conv</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Diagnóstico PMax</div>
+      <div class="insight-box insight-info">ℹ️ <strong>Início de agosto segue o ritmo de fechamento de julho</strong>: CPConv de R$4,40 nos 3 primeiros dias, próximo dos R$3,88 do mês anterior. Ainda é cedo para tirar conclusões — poucos dias de dados e o número de hoje (03/08) ainda pode mudar com a revisão de atribuição do Google Ads.</div>
+      <div class="insight-box insight-ok">✅ <strong>01/08 foi o dia mais forte do início do mês</strong>: 1.466 impressões, 141 cliques e 5,00 conversões (CPConv R$4,69). 02/08 seguiu em linha (987 impressões, 84 cliques, 4,00 conv, CPConv R$5,17).</div>
+      <div class="insight-box insight-ok">✅ <strong>03/08 (hoje, parcial) mostra o melhor CPConv dos 3 dias</strong>: R$3,26, com 375 impressões, 28 cliques e 3,99 conversões — mesmo com volume mais baixo (dia ainda não fechou).</div>
+      <div class="insight-box insight-ok">✅ <strong>"Grupo de recursos 27.07.2026" (criativos de imunidade, adicionados por Felipe em 27/07) segue como motor da campanha</strong>: 2.517 impressões (89% do PMax), 233 cliques e 9,00 conversões (CPConv R$4,45) nos 3 primeiros dias de agosto — confirma a boa recepção da renovação de criativos feita no fim de julho.</div>
+      <div class="insight-box insight-ok">✅ <strong>"Termos mais pesquisados" é o asset group mais eficiente do início do mês</strong>: CPConv R$3,36, o melhor entre os três grupos ativos.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Performance Diária</div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Data</th><th>Impressões</th><th>Cliques</th><th>CTR</th><th>Custo</th><th>Conv.</th><th>CPC</th><th>CPConv</th></tr></thead>
+          <tbody>
+            <tr><td>01/08/2026</td><td>1.466</td><td>141</td><td>9,62%</td><td>R$23,44</td><td>5,00</td><td>R$0,17</td><td>R$4,69</td></tr>
+            <tr><td>02/08/2026</td><td>987</td><td>84</td><td>8,51%</td><td>R$20,69</td><td>4,00</td><td>R$0,25</td><td>R$5,17</td></tr>
+            <tr style="background:#eff6ff"><td>03/08/2026 <span style="font-size:10px;color:#1e40af;font-weight:600">(hoje, parcial)</span></td><td>375</td><td>28</td><td>7,47%</td><td>R$13,00</td><td>3,99</td><td>R$0,46</td><td>R$3,26</td></tr>
+          </tbody>
+        </table>
+        <div class="insight-box insight-ok" style="margin-top:10px">✅ Os 3 primeiros dias de agosto seguem um patamar saudável, próximo do fechamento de julho. 01/08 teve o maior volume (1.466 impressões), e 03/08 (ainda parcial) já mostra o melhor CPConv (R$3,26) — número que tende a subir um pouco com a revisão de atribuição do Google Ads nos próximos dias, como é normal para o dia mais recente.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Asset Groups com Impressões, Cliques, Custo, Conversões, CTR, CPC e % das Conversões</div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Asset Group</th><th>Status</th><th>Imp.</th><th>Cliques</th><th>CTR</th><th>Custo</th><th>Conv.</th><th>% Conv.</th><th>CPC</th><th>CPConv</th></tr></thead>
+          <tbody>
+            <tr style="background:#eff6ff">
+              <td><strong>Grupo de recursos 27.07.2026</strong> <span style="font-size:10px;color:#1e40af;font-weight:600">(criativos de imunidade, desde 27/07)</span></td>
+              <td><span class="badge badge-blue">ATIVO</span></td>
+              <td>2.517</td><td>233</td><td>9,26%</td><td>R$40,09</td>
+              <td><strong>9,00</strong></td><td>69,3%</td><td>R$0,17</td>
+              <td><span class="badge badge-green">R$4,45</span></td>
+            </tr>
+            <tr>
+              <td><strong>Termos mais pesquisados</strong></td>
+              <td><span class="badge badge-green">ATIVO</span></td>
+              <td>218</td><td>13</td><td>5,96%</td><td>R$10,05</td>
+              <td><strong>2,99</strong></td><td>23,0%</td><td>R$0,77</td>
+              <td><span class="badge badge-green">R$3,36</span></td>
+            </tr>
+            <tr>
+              <td><strong>Interesses</strong></td>
+              <td><span class="badge badge-green">ATIVO</span></td>
+              <td>93</td><td>7</td><td>7,53%</td><td>R$6,98</td>
+              <td><strong>1,00</strong></td><td>7,7%</td><td>R$1,00</td>
+              <td><span class="badge badge-yellow">R$6,98</span></td>
+            </tr>
+            <tr style="color:#94a3b8">
+              <td>GRUPO - 01</td><td><span class="badge badge-gray">SEM TRÁFEGO</span></td>
+              <td>0</td><td>0</td><td>—</td><td>R$0</td><td>0</td><td>—</td><td>—</td><td>—</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="insight-box insight-ok" style="margin-top:12px">✅ O "Grupo de recursos 27.07.2026" já é o principal motor do PMax neste início de mês, com 69,3% das conversões — a renovação de criativos de imunidade feita por Felipe no fim de julho segue trazendo bons resultados. "Termos mais pesquisados" mantém o melhor CPConv (R$3,36) entre os grupos com tráfego.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Distribuição por Tipo de Inventário (Ad Network)</div>
+      <div class="section-sub">Período: 01–03/08/2026 · Rede confirmada diretamente via campo <code>segments.ad_network_type</code> da API</div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Rede</th><th>Impressões</th><th>% Total</th><th>Cliques</th><th>CTR</th><th>Custo</th><th>Conv.</th><th>CPConv</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>YouTube</strong></td>
+              <td>2.207</td><td>78,1%</td><td>217</td><td>9,83%</td><td>R$29,55</td>
+              <td><strong>6,00</strong></td><td><span class="badge badge-yellow">R$4,93</span></td>
+            </tr>
+            <tr style="background:#f0fdf4">
+              <td><strong>Discover</strong></td>
+              <td>395</td><td>14,0%</td><td>20</td><td>5,06%</td><td>R$13,88</td>
+              <td><strong>1,99</strong></td><td><span class="badge badge-yellow">R$6,97</span></td>
+            </tr>
+            <tr style="background:#f0fdf4">
+              <td><strong>Search 🏆</strong> <span style="font-size:10px;color:#94a3b8">(Google O&amp;O — melhor CPConv)</span></td>
+              <td>139</td><td>4,9%</td><td>11</td><td>7,91%</td><td>R$12,75</td>
+              <td><strong>5,00</strong></td><td><span class="badge badge-green">R$2,55</span></td>
+            </tr>
+            <tr>
+              <td><strong>Content/Display</strong></td>
+              <td>47</td><td>1,7%</td><td>6</td><td>12,77%</td><td>R$0,97</td>
+              <td><strong>0,00</strong></td><td>—</td>
+            </tr>
+            <tr>
+              <td><strong>Maps</strong></td>
+              <td>42</td><td>1,5%</td><td>0</td><td>—</td><td>R$0,00</td>
+              <td><strong>0,00</strong></td><td>—</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="insight-box insight-info" style="margin-top:12px">ℹ️ YouTube concentra a maior parte do volume (78,1%), mas o Search dentro do PMax (Google O&amp;O) segue com o melhor CPConv da distribuição (R$2,55), ainda que pequeno em volume (4,9%). Discover mantém volume relevante (14,0%) com CPConv próximo da média da campanha.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Plano de Ação PMax</div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Prioridade</th><th>Ação</th><th>Prazo</th><th>Impacto esperado</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge badge-blue">MÉDIA</span></td><td>Acompanhar mais alguns dias antes de qualquer ajuste — apenas 3 dias de dados em agosto ainda não são suficientes para decisões estruturais</td><td>Próximos dias</td><td>Confirmar se o patamar de julho se mantém</td></tr>
+            <tr><td><span class="badge badge-yellow">ALTA</span></td><td>Manter o acompanhamento do "Grupo de recursos 27.07.2026", que já responde por quase 70% das conversões do PMax</td><td>Rotina</td><td>Garantir que a renovação de criativos continue performando</td></tr>
+            <tr><td><span class="badge badge-blue">MÉDIA</span></td><td>Avaliar aumentar o budget do PMax acima de R$20/dia, dado o bom início de mês</td><td>Próxima semana</td><td>Captar mais volume no grupo mais eficiente</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PMAX ASSETS -->
+  <div id="pane-pmax-assets" class="inner-pane">
+
+    <div class="section">
+      <div class="section-title">Elementos por Asset Group</div>
+      <div class="card">
+        <div class="two-col">
+          <div>
+            <div style="font-weight:700;color:#7c3aed;font-size:13px;margin-bottom:8px">Termos mais pesquisados</div>
+            <div style="font-size:12px;color:#64748b;line-height:1.9">
+              • Headlines (TEXT)<br>• Descriptions (TEXT)<br>• Imagens 1200×628 branded<br>• Vídeos YouTube<br>• Logo + nome da empresa
+            </div>
+          </div>
+          <div>
+            <div style="font-weight:700;color:#7c3aed;font-size:13px;margin-bottom:8px">Interesses</div>
+            <div style="font-size:12px;color:#64748b;line-height:1.9">
+              • Headlines (TEXT)<br>• Descriptions (TEXT)<br>• Imagens WhatsApp / produto<br>• Vídeos YouTube<br>• Logo + nome da empresa
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px">
+          <div style="font-weight:700;color:#1e40af;font-size:13px;margin-bottom:8px">Grupo de recursos 27.07.2026 <span style="font-size:10px;color:#1e40af;font-weight:600">(criado em 27/07)</span></div>
+          <div style="font-size:12px;color:#64748b;line-height:1.9">
+            • 3 vídeos novos do YouTube<br>• 24 headlines/descriptions novas<br>• Tema: "imunidade no inverno" / fórmulas manipuladas<br>• Principal motor de conversões do PMax neste início de agosto (69,3% das conversões)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Recomendações de Assets</div>
+      <div class="insight-box insight-ok">✅ Os criativos de imunidade adicionados em 27/07 seguem performando bem — sem necessidade de novas trocas neste momento.</div>
+      <div class="insight-box insight-info">ℹ️ Nenhum asset novo foi adicionado à campanha em agosto até agora. Ver aba Histórico para o registro completo de alterações.</div>
+    </div>
+
+  </div>
+
+  <div id="pane-pmax-placements" class="inner-pane" style="display:none">
+    <div class="section">
+      <div class="section-title">📍 Placements — Onde os Anúncios foram Exibidos</div>
+      <div class="section-sub">Período: 01–03/08/2026 · Performance Max · Via Placement View (cobertura parcial — não soma 100% das impressões da campanha)</div>
+      <div class="insight-box insight-ok">✅ <strong>Google Owned &amp; Operated</strong> segue como o maior placement isolado, com 1.010 impressões no acumulado do início de agosto.</div>
+      <table>
+        <thead><tr><th>#</th><th>Placement</th><th>Impressões</th></tr></thead>
+        <tbody>
+          <tr style="background:#f0fdf4"><td>1</td><td>Google Owned &amp; Operated <span style="font-size:10px;color:#166534">(busca própria do Google)</span></td><td>1.010</td></tr>
+          <tr><td>2</td><td>offlinesharing.com <span style="font-size:10px;color:#94a3b8">(Display)</span></td><td>45</td></tr>
+          <tr><td>3</td><td>"Video no longer available" <span style="font-size:10px;color:#92400e">(vídeo indisponível/removido)</span></td><td>12</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:11px;color:#94a3b8;margin-top:12px">Além destes, dezenas de outros vídeos do YouTube (conteúdo de oração, novelas, música sertaneja e curiosidades) aparecem com volume baixo cada, entre 1 e 5 impressões — posicionamentos automáticos da Performance Max em conteúdo de entretenimento/religioso fora do nicho farmacêutico, mesmo padrão observado em julho.</p>
+      <div class="insight-box insight-info" style="margin-top:16px">ℹ️ O placement principal segue sendo o Google Owned &amp; Operated, positivo para a qualidade do tráfego. Sem novidades relevantes neste início de mês — mesmo padrão de julho.</div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+</div><!-- /tab-1 -->
+
+<!-- ═══ TAB 2: SEARCH ═══ -->
+<div class="tab-pane" id="tab-2" style="display:none;">
+<style>
+  #tab-2 .header { background: linear-gradient(135deg, #0c1445 0%, #1e40af 100%); color: white; padding: 36px 48px; }
+  #tab-2 .header h1 { font-size: 26px; font-weight: 700; }
+  #tab-2 .header p { font-size: 13px; color: #bfdbfe; margin-top: 6px; }
+  #tab-2 .header .badge { display: inline-block; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 14px; font-size: 12px; margin-top: 12px; margin-right: 8px; }
+  #tab-2 .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+  #tab-2 .section { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,.07); margin-bottom: 24px; }
+  #tab-2 .section-title { font-size: 16px; font-weight: 700; color: #0d1b2a; margin-bottom: 4px; }
+  #tab-2 .section-sub { font-size: 12px; color: #6c757d; margin-bottom: 20px; }
+  #tab-2 .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 28px; }
+  #tab-2 .kpi { background: white; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,.07); border-top: 3px solid #1e40af; }
+  #tab-2 .kpi .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: #6c757d; font-weight: 600; }
+  #tab-2 .kpi .value { font-size: 28px; font-weight: 700; color: #0d1b2a; margin-top: 6px; line-height: 1; }
+  #tab-2 .kpi .sub { font-size: 12px; color: #6c757d; margin-top: 4px; }
+  #tab-2 table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  #tab-2 th { background: #f8f9fa; text-align: left; padding: 10px 12px; font-size: 11px; text-transform: uppercase; color: #6c757d; font-weight: 600; border-bottom: 2px solid #e9ecef; }
+  #tab-2 td { padding: 10px 12px; border-bottom: 1px solid #f1f3f5; vertical-align: middle; }
+  #tab-2 tr:last-child td { border-bottom: none; }
+  #tab-2 tr:hover td { background: #eff6ff; }
+  #tab-2 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  #tab-2 .inner-nav { display: flex; gap: 8px; margin: 0 0 24px; background: #f3f4f6; padding: 6px; border-radius: 10px; width: fit-content; }
+  #tab-2 .inner-tab { padding: 8px 18px; font-size: 12px; font-weight: 600; border: none; background: none; cursor: pointer; color: #6b7280; border-radius: 7px; transition: all .2s; font-family: 'Segoe UI', sans-serif; }
+  #tab-2 .inner-tab.active { background: white; color: #1e40af; box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+  #tab-2 .inner-pane { display: none; }
+  #tab-2 .inner-pane.active { display: block; }
+  #tab-2 .badge-green { background: #d1fae5; color: #065f46; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  #tab-2 .badge-yellow { background: #fef9c3; color: #854d0e; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  #tab-2 .badge-red { background: #fee2e2; color: #991b1b; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  #tab-2 .badge-blue { background: #dbeafe; color: #1e40af; padding: 2px 10px; border-radius: 20px; font-size: 11px; }
+  #tab-2 .badge-purple { background: #ede9fe; color: #5b21b6; padding: 2px 10px; border-radius: 20px; font-size: 11px; }
+  #tab-2 .badge-gray { background: #f3f4f6; color: #374151; padding: 2px 10px; border-radius: 20px; font-size: 11px; }
+  #tab-2 .insight-box { border-radius: 8px; padding: 14px 18px; margin-bottom: 10px; font-size: 13px; border-left: 4px solid; }
+  #tab-2 .insight-ok { background: #f0fdf4; border-color: #22c55e; color: #14532d; }
+  #tab-2 .insight-warn { background: #fffbeb; border-color: #f59e0b; color: #92400e; }
+  #tab-2 .insight-alert { background: #fef2f2; border-color: #ef4444; color: #991b1b; }
+  #tab-2 .insight-info { background: #eff6ff; border-color: #3b82f6; color: #1e40af; }
+</style>
+
+<div class="header">
+  <h1>🔍 Search — Performance Agosto 2026</h1>
+  <p>Campanha: SUPREMA 2 — Search · 01 a 03/08/2026</p>
+  <span class="badge">Budget: R$40/dia (desde 06/07)</span>
+  <span class="badge">8,00 conversões em 3 dias</span>
+  <span class="badge" style="background:rgba(34,197,94,0.25);border-color:rgba(34,197,94,0.4)">▶ Parceiros de pesquisa ativados em 29/07</span>
+</div>
+
+<div class="container">
+
+  <div class="inner-nav">
+    <button class="inner-tab active" data-inner="search-perf" onclick="switchInnerTab(this)">Performance</button>
+    <button class="inner-tab" data-inner="search-termos" onclick="switchInnerTab(this)">Termos de Busca</button>
+  </div>
+
+  <div id="pane-search-perf" class="inner-pane active">
+
+    <div class="section">
+      <div class="section-title">KPIs Search</div>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="label">Custo por Conversão</div><div class="value">R$10,85</div><div class="sub">Prod. Manip. R$10,79 · Long Tail R$10,90</div></div>
+        <div class="kpi"><div class="label">Conversões</div><div class="value">8,00</div><div class="sub">38,1% do total da conta</div></div>
+        <div class="kpi"><div class="label">CPC Médio</div><div class="value">R$2,80</div><div class="sub">12,2× maior que PMax</div></div>
+        <div class="kpi"><div class="label">Impressões</div><div class="value">565</div><div class="sub">CTR 5,49%</div></div>
+        <div class="kpi"><div class="label">Custo</div><div class="value">R$86,81</div><div class="sub">60,3% do investimento total</div></div>
+        <div class="kpi"><div class="label">Taxa de Conv.</div><div class="value">25,8%</div><div class="sub">31 cliques → 8,00 conv</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Performance Diária</div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Data</th><th>Impressões</th><th>Cliques</th><th>CTR</th><th>Custo</th><th>Conv.</th><th>CPC</th><th>CPConv</th></tr></thead>
+          <tbody>
+            <tr><td>01/08/2026</td><td>63</td><td>4</td><td>6,35%</td><td>R$5,76</td><td>1,00</td><td>R$1,44</td><td>R$5,76</td></tr>
+            <tr><td>02/08/2026</td><td>114</td><td>5</td><td>4,39%</td><td>R$9,44</td><td>3,00</td><td>R$1,89</td><td>R$3,15</td></tr>
+            <tr style="background:#fef2f2"><td>03/08/2026 <span style="font-size:10px;color:#991b1b;font-weight:600">(hoje, parcial)</span></td><td>388</td><td>22</td><td>5,67%</td><td>R$71,61</td><td>4,00</td><td>R$3,26</td><td>R$17,90</td></tr>
+          </tbody>
+        </table>
+        <div class="insight-box insight-warn" style="margin-top:10px">💡 <strong>03/08 (hoje, parcial) veio com investimento e volume bem mais altos que os dois dias anteriores</strong>: R$71,61 investidos (vs R$5,76 e R$9,44), 388 impressões e 22 cliques — um salto que coincide com a ativação dos parceiros de pesquisa (Search Network) feita por Felipe em 29/07. O CPConv do dia (R$17,90) está mais alto que a média dos dias anteriores, mas ainda é cedo para uma leitura definitiva: o número tende a melhorar com a revisão de atribuição do Google Ads e conforme o dia termina de fechar. Vale acompanhar nos próximos dias se esse novo patamar de volume se mantém e se a eficiência se estabiliza.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Conversões por Grupo</div>
+      <div class="card">
+        <div class="two-col">
+          <div>
+            <div style="font-weight:700;font-size:13px;margin-bottom:10px;color:#1e40af">Long Tail — 1 keyword ativa</div>
+            <div class="kpi" style="margin-bottom:8px"><div class="label">Keyword</div><div class="value" style="font-size:12px;line-height:1.5;margin-top:4px">"fórmula manipulada para energia e disposição" [BROAD]</div></div>
+            <div class="kpi"><div class="label">CPConv</div><div class="value">R$10,90</div><div class="sub">16 cliques → 4,50 conv</div></div>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:13px;margin-bottom:10px;color:#64748b">Produtos Manipulados — 4 keywords</div>
+            <div class="kpi" style="margin-bottom:8px"><div class="label">Principal keyword</div><div class="value" style="font-size:13px;margin-top:4px">"farmácia de manipulação" [PHRASE]</div></div>
+            <div class="kpi"><div class="label">CPConv</div><div class="value">R$10,79</div><div class="sub">15 cliques → 3,50 conv</div></div>
+          </div>
+        </div>
+        <div class="insight-box insight-info" style="margin-top:12px">ℹ️ Com apenas 3 dias de dados, os dois grupos seguem praticamente empatados em eficiência (CPConv R$10,79 e R$10,90) — sem diversificação de keywords ainda neste início de mês. A Long tail continua sustentada quase inteiramente pela mesma keyword de correspondência ampla que vinha performando bem em julho.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Diagnóstico Search</div>
+      <div class="insight-box insight-warn">💡 <strong>03/08 (hoje, parcial) puxou o custo por conversão do mês para cima</strong> (R$17,90 no dia, contra R$5,76 e R$3,15 nos dois dias anteriores) — coincide com a ativação dos parceiros de pesquisa (Search Network) em 29/07, que amplia o alcance da campanha para sites parceiros do Google, geralmente com CPC mais alto. Vale acompanhar se esse padrão se repete nos próximos dias antes de decidir se mantém a configuração.</div>
+      <div class="insight-box insight-ok">✅ <strong>02/08 teve o melhor CPConv do início do mês</strong> (R$3,15, 3,00 conversões) — em linha com os melhores dias de julho.</div>
+      <div class="insight-box insight-ok">✅ <strong>Termos geográficos seguem convertendo bem</strong>: "farmácia de manipulação em suzano" e "farmacia de manipulação osasco" já converteram (1 conversão cada, CPConv R$4,70 e R$5,36) neste início de agosto — mesmo padrão eficiente de cauda longa geográfica visto em julho. Ver aba "Termos de Busca" para detalhes.</div>
+      <div class="insight-box insight-info">ℹ️ Sem novas alterações registradas na campanha Search em agosto — a última mudança foi em 29/07 (ativação dos parceiros de pesquisa + novo criativo de imagem). Ver aba Histórico para detalhes.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Performance por Grupo de Anúncios</div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Grupo</th><th>Keywords ativas</th><th>Imp.</th><th>Cliques</th><th>CTR</th><th>Custo</th><th>Conv.</th><th>CPConv</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Produtos Manipulados</strong></td><td>4</td>
+              <td>381</td><td>15</td><td>3,94%</td><td>R$37,75</td><td>3,50</td>
+              <td><span class="badge badge-yellow">R$10,79</span></td>
+            </tr>
+            <tr>
+              <td><strong>Long tail</strong></td><td>1</td>
+              <td>184</td><td>16</td><td>8,70%</td><td>R$49,06</td><td>4,50</td>
+              <td><span class="badge badge-yellow">R$10,90</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Plano de Ação Search</div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Prioridade</th><th>Ação</th><th>Prazo</th><th>Impacto esperado</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge badge-yellow">ALTA</span></td><td>Acompanhar o desempenho dos parceiros de pesquisa (ativados em 29/07) nos próximos dias — 03/08 veio com CPConv bem mais alto (R$17,90) que os dias anteriores</td><td>Próximos dias</td><td>Decidir se mantém a rede de parceiros ativa</td></tr>
+            <tr><td><span class="badge badge-blue">MÉDIA</span></td><td>Adicionar keywords exatas para os termos geolocalizados que já converteram (Suzano, Osasco)</td><td>Esta semana</td><td>Reduzir CPConv aproveitando cauda longa geográfica</td></tr>
+            <tr><td><span class="badge badge-blue">MÉDIA</span></td><td>Aguardar mais dias de dados antes de qualquer ajuste estrutural — apenas 3 dias de agosto ainda não são suficientes</td><td>Rotina</td><td>Evitar decisões precipitadas com pouca amostra</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SEARCH TERMOS -->
+  <div id="pane-search-termos" class="inner-pane">
+
+    <div class="section">
+      <div class="section-title">Termos de Busca — Principais por Cliques</div>
+      <div class="section-sub">Dados de 01–03/08/2026</div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Termo de Busca</th><th>Imp.</th><th>Cliques</th><th>Custo</th><th>Conv.</th></tr></thead>
+          <tbody>
+            <tr><td><strong>farmácia de manipulação barata</strong></td><td>22</td><td>0</td><td>R$0,00</td><td>0</td></tr>
+            <tr><td>farmácia de manipulação <span style="font-size:10px;color:#94a3b8">(genérico, com acento)</span></td><td>16</td><td>0</td><td>R$0,00</td><td>0</td></tr>
+            <tr><td>manipulação</td><td>9</td><td>0</td><td>R$0,00</td><td>0</td></tr>
+            <tr style="background:#f0fdf4"><td><strong>farmácia de manipulação em suzano</strong></td><td>5</td><td>2</td><td>R$4,70</td><td><span class="badge badge-green">1 ✅</span></td></tr>
+            <tr style="background:#f0fdf4"><td><strong>farmacia de manipulação osasco</strong></td><td>5</td><td>2</td><td>R$5,36</td><td><span class="badge badge-green">1 ✅</span></td></tr>
+            <tr><td>farmacia de manipulação itupeva</td><td>5</td><td>0</td><td>R$0,00</td><td>0</td></tr>
+            <tr><td>farmacia de manipulação sao caetano</td><td>3</td><td>0</td><td>R$0,00</td><td>0</td></tr>
+            <tr><td>farmacia de manipulação sbc</td><td>4</td><td>0</td><td>R$0,00</td><td>0</td></tr>
+            <tr><td>farmacia de manipulação sao miguel paulista</td><td>3</td><td>1</td><td>R$2,68</td><td>0</td></tr>
+            <tr><td>farmácia drogasil</td><td>3</td><td>1</td><td>R$2,04</td><td>0</td></tr>
+            <tr><td>farmacia manipulacao perto de mim</td><td>2</td><td>1</td><td>R$6,06</td><td>0</td></tr>
+            <tr><td>farmácia de manipulação em são bernardo do campo</td><td>2</td><td>1</td><td>R$1,18</td><td>0</td></tr>
+            <tr style="color:#94a3b8"><td colspan="5">+ dezenas de outros termos com 1–2 impressões cada, cobrindo cidades como Diadema, Cajamar, Ferraz de Vasconcelos, Guarulhos, Jundiaí, Itupeva e Jabaquara — mesmo padrão de cauda longa geográfica observado em julho.</td></tr>
+          </tbody>
+        </table>
+        <div class="insight-box insight-ok" style="margin-top:12px">✅ <strong>Cauda longa geográfica segue convertendo bem neste início de mês</strong>: "farmácia de manipulação em suzano" e "farmacia de manipulação osasco" já geraram 1 conversão cada, com CPConv abaixo de R$5,50 — mesmo padrão observado ao longo de julho. Vale considerar promover esses termos a keywords exatas, como já sugerido no relatório anterior.</div>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /container -->
+</div><!-- /tab-2 -->
+
+<!-- ═══ TAB 3: HISTÓRICO ═══ -->
+<div class="tab-pane" id="tab-3" style="display:none;">
+<style>
+  .hist-header { background: linear-gradient(135deg, #451a03 0%, #b45309 100%); color: white; padding: 36px 48px; }
+  .hist-header h1 { font-size: 24px; font-weight: 700; }
+  .hist-header p  { font-size: 13px; color: #fde68a; margin-top: 6px; }
+  .hist-badge { display: inline-block; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 14px; font-size: 12px; margin-top: 12px; margin-right: 8px; }
+  .hist-container { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before { content: ''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: #e5e7eb; }
+  .tl-item { position: relative; margin-bottom: 28px; }
+  .tl-dot { position: absolute; left: -26px; top: 4px; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; }
+  .tl-dot.orange { background: #f59e0b; }
+  .tl-dot.red    { background: #ef4444; }
+  .tl-dot.green  { background: #22c55e; }
+  .tl-dot.gray   { background: #9ca3af; }
+  .tl-date { font-size: 11px; color: #9ca3af; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .tl-card { background: white; border-radius: 10px; padding: 16px 20px; box-shadow: 0 1px 4px rgba(0,0,0,.07); border-left: 4px solid; }
+  .tl-card.orange { border-color: #f59e0b; }
+  .tl-card.red    { border-color: #ef4444; }
+  .tl-card.green  { border-color: #22c55e; }
+  .tl-card.gray   { border-color: #9ca3af; }
+  .tl-title { font-size: 14px; font-weight: 700; color: #0d1b2a; margin-bottom: 4px; }
+  .tl-meta  { font-size: 11px; color: #6c757d; margin-bottom: 10px; }
+  .tl-body  { font-size: 13px; color: #374151; line-height: 1.6; }
+  .change-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; margin: 3px 0; }
+  .pill-up   { background: #d1fae5; color: #065f46; }
+  .pill-down { background: #fee2e2; color: #991b1b; }
+  .pill-new  { background: #dbeafe; color: #1e40af; }
+  .pill-pause{ background: #f3f4f6; color: #374151; }
+  .impact-box { margin-top: 12px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #78350f; }
+  .impact-box.blue { background: #eff6ff; border-color: #bfdbfe; color: #1e3a8a; }
+  .impact-box.green { background: #f0fdf4; border-color: #86efac; color: #14532d; }
+  .summary-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 28px; }
+  .sum-card { background: white; border-radius: 10px; padding: 16px 18px; box-shadow: 0 1px 4px rgba(0,0,0,.07); text-align: center; }
+  .sum-card .num { font-size: 28px; font-weight: 800; }
+  .sum-card .lbl { font-size: 11px; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+  .bud-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .bud-table th { background: #f8f9fa; text-align: left; padding: 8px 12px; font-size: 11px; text-transform: uppercase; color: #6c757d; font-weight: 600; border-bottom: 2px solid #e9ecef; }
+  .bud-table td { padding: 8px 12px; border-bottom: 1px solid #f1f3f5; }
+  .bud-table tr:last-child td { border-bottom: none; }
+</style>
+
+<div class="hist-header">
+  <h1>📋 Histórico de Alterações</h1>
+  <p>Conta: SUPREMA 2 (2308311849) · por Felipe e equipe de mídia · via Google Ads Web</p>
+  <span class="hist-badge">Julho de 2026 (últimos 30 dias)</span>
+  <span class="hist-badge">Nenhuma alteração em agosto até agora</span>
+  <span class="hist-badge">2 campanhas ativas</span>
+</div>
+
+<div class="hist-container">
+
+  <div class="summary-grid" style="grid-template-columns: repeat(5,1fr);">
+    <div class="sum-card">
+      <div class="num" style="color:#f59e0b">1</div>
+      <div class="lbl">Ajuste de Budget</div>
+    </div>
+    <div class="sum-card">
+      <div class="num" style="color:#16a34a">Vários</div>
+      <div class="lbl">Lotes de Negativas</div>
+    </div>
+    <div class="sum-card">
+      <div class="num" style="color:#22c55e">2</div>
+      <div class="lbl">Novos Anúncios/Status</div>
+    </div>
+    <div class="sum-card">
+      <div class="num" style="color:#7c3aed">1</div>
+      <div class="lbl">Renovação de Criativos (PMax)</div>
+    </div>
+    <div class="sum-card">
+      <div class="num" style="color:#1e40af">1</div>
+      <div class="lbl">Ativação de Rede (Search)</div>
+    </div>
+  </div>
+
+  <div style="font-size:18px;font-weight:800;color:#78350f;margin:4px 0 18px;padding-bottom:8px;border-bottom:2px solid #fde68a;">🗓️ Agosto</div>
+  <div class="insight-box" style="background:#eff6ff;border-left:4px solid #3b82f6;color:#1e40af;border-radius:8px;padding:14px 18px;font-size:13px;margin-bottom:8px;">ℹ️ Nenhuma alteração registrada na conta até 03/08/2026.</div>
+
+  <div style="font-size:18px;font-weight:800;color:#78350f;margin:32px 0 18px;padding-bottom:8px;border-bottom:2px solid #fde68a;">🗓️ Julho</div>
+
+  <div class="timeline">
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#1e40af"></div>
+      <div class="tl-card" style="border-color:#1e40af;background:linear-gradient(135deg,#eff6ff 0%,#ffffff 60%)">
+        <div class="tl-title">🌐 Parceiros de pesquisa (Search Network) ativados + novo criativo de imagem</div>
+        <div class="tl-meta">Campanha: Search (PERF_VENDA_SITE_12.2025) · por Felipe · 29/07</div>
+        <div class="tl-body">
+          <span class="change-pill pill-up">🌐 rede de parceiros de pesquisa ativada</span>
+          <span class="change-pill pill-new" style="margin-left:6px;">🖼️ novo criativo de imagem adicionado e ativado</span>
+          <div class="impact-box blue" style="margin-top:10px;">
+            💡 <strong>O que mudou:</strong> Felipe ativou a opção de exibir anúncios também nos parceiros de pesquisa do Google (sites parceiros que exibem resultados do Google) e adicionou uma nova imagem (1200×628) como asset da campanha.<br><br>
+            📊 <strong>Resultado:</strong> 03/08 (mais recente após a mudança) mostrou volume e investimento bem mais altos que os dias anteriores (R$71,61 vs R$5,76–9,44), com CPConv também mais alto (R$17,90) — ainda cedo para confirmar se é um efeito passageiro do ramp-up da rede de parceiros ou um novo patamar de custo. Ver aba Search para detalhes.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#7c3aed"></div>
+      <div class="tl-card" style="border-color:#7c3aed;background:linear-gradient(135deg,#faf5ff 0%,#ffffff 60%)">
+        <div class="tl-title">🆕 Novos criativos no PMax — tema "imunidade no inverno"</div>
+        <div class="tl-meta">Campanha: PMax (PERF_PMAX_VENDA_SITE_04.2026) · por Felipe · 27/07</div>
+        <div class="tl-body">
+          <span class="change-pill pill-new">🎬 3 novos vídeos do YouTube</span>
+          <span class="change-pill pill-new" style="margin-left:6px;">📝 24 novos textos (headlines/descriptions)</span>
+          <div class="impact-box" style="margin-top:10px;background:#f5f3ff;border-color:#ddd6fe;color:#4c1d95;">
+            💡 <strong>O que mudou:</strong> Felipe criou o asset group "Grupo de recursos 27.07.2026" com 3 vídeos do YouTube e 24 headlines/descriptions novas, com ângulo criativo focado em imunidade no inverno.<br><br>
+            📊 <strong>Resultado:</strong> este grupo já é o principal motor de conversões do PMax neste início de agosto, respondendo por 69,3% das conversões da campanha (9,00 de 12,99) — a renovação de criativos se confirmou um sucesso.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot green"></div>
+      <div class="tl-card green">
+        <div class="tl-title">Campanha Search reativada</div>
+        <div class="tl-meta">Campanha: Search (PERF_VENDA_SITE_12.2025) · por equipe de mídia · 21/07</div>
+        <div class="tl-body">
+          <span class="change-pill pill-up">▶ status alterado: pausada → ativa</span>
+          <div class="impact-box green" style="margin-top:10px;">
+            💡 <strong>O que mudou:</strong> A campanha Search, pausada por Felipe em 20/07 às 17:42, foi reativada pela equipe de mídia já em 21/07 às 18:55. A pausa durou menos de um dia.<br><br>
+            📊 <strong>Resultado:</strong> a campanha segue ativa e estável desde então, sem novas interrupções.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot red"></div>
+      <div class="tl-card red">
+        <div class="tl-title">Campanha Search pausada</div>
+        <div class="tl-meta">Campanha: Search (PERF_VENDA_SITE_12.2025) · por Felipe · 20/07, 17:42</div>
+        <div class="tl-body">
+          <span class="change-pill pill-pause">⏸ status alterado: ativa → pausada</span>
+          <div class="impact-box" style="margin-top:10px;">
+            💡 <strong>O que mudou:</strong> A campanha Search foi pausada por Felipe às 17:42 do dia 20/07. Revertida já em 21/07 pela equipe de mídia (ver evento acima).
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot green"></div>
+      <div class="tl-card green">
+        <div class="tl-title">Novo anúncio criado e status de anúncio alterado — grupo de anúncios (Search)</div>
+        <div class="tl-meta">Campanha: Search (PERF_VENDA_SITE_12.2025) · por Felipe · 08/07</div>
+        <div class="tl-body">
+          <span class="change-pill pill-new">+ novo anúncio criado</span>
+          <span class="change-pill pill-pause" style="margin-left:6px;">⏸ status de anúncio alterado</span>
+          <div class="impact-box green" style="margin-top:10px;">
+            💡 <strong>O que mudou:</strong> Um novo anúncio foi adicionado ao grupo "Produtos Manipulados" e o anúncio anterior foi pausado no mesmo grupo.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#3b82f6"></div>
+      <div class="tl-card" style="border-color:#3b82f6">
+        <div class="tl-title">Grande lote de negativas e ajuste de orçamento — ambas as campanhas</div>
+        <div class="tl-meta">Campanhas: PMax e Search · por Felipe · 06–07/07</div>
+        <div class="tl-body">
+          <span class="change-pill pill-new">🚫 amplo lote de negativas adicionadas (PMax e Search)</span>
+          <span class="change-pill pill-up" style="margin-left:6px;">💰 orçamento diário redistribuído</span>
+          <div class="impact-box blue" style="margin-top:10px;">
+            💡 <strong>O que mudou:</strong> Em 06/07, o orçamento diário foi redistribuído entre as campanhas (PMax: R$40→R$20/dia; Search: R$20→R$40/dia — valores que seguem em vigor até hoje). Nos dias 06 e 07/07, um grande lote de palavras-chave negativas foi adicionado em ambas as campanhas, incluindo termos de marcas concorrentes e termos irrelevantes (ex.: "farmacia de homeopatia"), como parte da limpeza de tráfego de baixa qualidade.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /timeline julho -->
+
+  <!-- EVOLUÇÃO DO BUDGET -->
+  <div style="background:white;border-radius:12px;padding:24px;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:24px;">
+    <div style="font-size:16px;font-weight:700;color:#0d1b2a;margin-bottom:4px;">Evolução do Budget Diário</div>
+    <div style="font-size:12px;color:#6c757d;margin-bottom:20px;">Últimos valores confirmados — sem novas alterações desde 06/07</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+      <div>
+        <div style="font-weight:700;font-size:13px;color:#7c3aed;margin-bottom:10px;">⚡ PMax</div>
+        <table class="bud-table">
+          <thead><tr><th>Data</th><th>Budget/dia</th><th>Movimento</th></tr></thead>
+          <tbody>
+            <tr><td>Até 06/07</td><td>R$40,00</td><td>—</td></tr>
+            <tr style="background:#fffbeb"><td><strong>Desde 06/07</strong></td><td style="font-weight:700">R$20,00</td><td><span class="change-pill pill-down" style="font-size:11px">−50%</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div style="font-weight:700;font-size:13px;color:#1e40af;margin-bottom:10px;">🔍 Search</div>
+        <table class="bud-table">
+          <thead><tr><th>Data</th><th>Budget/dia</th><th>Movimento</th></tr></thead>
+          <tbody>
+            <tr><td>Até 06/07</td><td>R$20,00</td><td>—</td></tr>
+            <tr style="background:#f0fdf4"><td><strong>Desde 06/07</strong></td><td style="font-weight:700">R$40,00</td><td><span class="change-pill pill-up" style="font-size:11px">+100%</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p style="font-size:11px;color:#94a3b8;margin-top:14px;">Nenhum novo ajuste de orçamento foi registrado desde 06/07 — os valores acima seguem em vigor.</p>
+  </div>
+
+  <!-- IMPACTO DAS ALTERAÇÕES -->
+  <div style="background:white;border-radius:12px;padding:24px;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:24px;">
+    <div style="font-size:16px;font-weight:700;color:#0d1b2a;margin-bottom:4px;">Impacto das Alterações</div>
+    <div style="font-size:12px;color:#6c757d;margin-bottom:20px;">Resumo por mês das mudanças realizadas na conta</div>
+    <table class="bud-table">
+      <thead><tr><th>Mês</th><th>Resumo</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Agosto</strong></td>
+          <td>Nenhuma alteração registrada até 03/08.</td>
+        </tr>
+        <tr>
+          <td><strong>Julho</strong></td>
+          <td>Redistribuição de orçamento entre as campanhas (06/07), grande lote de negativação de termos, novo anúncio no Search (08/07), pausa breve do Search revertida no dia seguinte (20–21/07), renovação de criativos no PMax com tema imunidade (27/07) e, no fim do mês, ativação dos parceiros de pesquisa no Search com novo criativo de imagem (29/07).</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- /hist-container -->
+</div><!-- /tab-3 -->
+
+<!-- ========= TAB 4 — META ADS ========= -->
+<div id="tab-4" class="tab-pane">
+<style>
+  #tab-4 .meta-header {
+    background: linear-gradient(135deg, #0e1b4a 0%, #1877f2 100%);
+    padding: 36px 32px 28px; color: white;
+  }
+  #tab-4 .meta-header h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  #tab-4 .meta-header p { font-size: 13px; opacity: .75; }
+  #tab-4 .meta-container { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
+  #tab-4 .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+  #tab-4 .kpi-card { background: white; border-radius: 10px; padding: 18px 20px; box-shadow: 0 1px 4px rgba(0,0,0,.08); border-top: 3px solid #1877f2; }
+  #tab-4 .kpi-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #64748b; margin-bottom: 6px; }
+  #tab-4 .kpi-value { font-size: 26px; font-weight: 800; color: #1e293b; }
+  #tab-4 .kpi-sub { font-size: 11px; color: #94a3b8; margin-top: 3px; }
+  #tab-4 .section { background: white; border-radius: 10px; padding: 22px 24px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  #tab-4 .section h2 { font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; }
+  #tab-4 table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  #tab-4 th { background: #f8fafc; color: #475569; font-weight: 700; font-size: 11px; text-transform: uppercase; padding: 8px 12px; text-align: left; border-bottom: 2px solid #e2e8f0; }
+  #tab-4 td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+  #tab-4 tr:hover td { background: #f8fafc; }
+  #tab-4 .num { text-align: right; font-variant-numeric: tabular-nums; }
+  @media (max-width: 768px) {
+    #tab-4 .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+
+<div class="meta-header">
+  <h1>📘 Meta Ads · Agosto 2026</h1>
+  <p>Conta: Suprema Farma &nbsp;·&nbsp; Planilha ainda sem dados de agosto na data desta atualização</p>
+</div>
+
+<div class="meta-container">
+
+  <div class="section" style="background:#eff6ff;border-left:4px solid #1877f2;">
+    <h2 style="border-bottom:none;margin-bottom:10px;">ℹ️ Dados de agosto ainda não disponíveis</h2>
+    <div style="font-size:13px;color:#1e3a5f;line-height:1.6;">
+      <p style="margin-bottom:8px;">A planilha de Meta Ads (abas Dados Gerais, Gênero, Idade, Posicionamento e Criativos) ainda não tem nenhuma linha com data de agosto/2026 — a última data registrada em todas as abas é <strong>31/07/2026</strong>. Não foi possível montar os KPIs, tabelas de anúncios, gênero/idade, posicionamento ou criativos deste mês por falta de dados na fonte.</p>
+      <p>Este espaço será atualizado automaticamente no próximo relatório, assim que a planilha receber as primeiras linhas de agosto.</p>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">💰 Investimento</div>
+      <div class="kpi-value">—</div>
+      <div class="kpi-sub">Sem dados de agosto na planilha</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">👁️ Impressões</div>
+      <div class="kpi-value">—</div>
+      <div class="kpi-sub">Sem dados de agosto na planilha</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">💬 Conversas (WPP)</div>
+      <div class="kpi-value">—</div>
+      <div class="kpi-sub">Sem dados de agosto na planilha</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">📊 Custo/Conversa</div>
+      <div class="kpi-value">—</div>
+      <div class="kpi-sub">Sem dados de agosto na planilha</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📎 Última leitura disponível — Julho/2026 (referência)</h2>
+    <p style="font-size:12px;color:#64748b;margin-bottom:12px">Números já publicados no relatório de julho, mantidos aqui apenas como referência até a planilha atualizar com dados de agosto.</p>
+    <table>
+      <tr><th>Métrica</th><th class="num">Julho/2026</th></tr>
+      <tr><td>Investimento</td><td class="num">R$ 289,61</td></tr>
+      <tr><td>Impressões</td><td class="num">10.908</td></tr>
+      <tr><td>Conversas (WPP)</td><td class="num">34–35</td></tr>
+      <tr><td>Custo por Conversa</td><td class="num">R$ 8,28</td></tr>
+    </table>
+  </div>
+
+</div>
+</div><!-- /tab-4 -->
+
+
+<script>
+function switchInnerTab(btn) {
+  var pane = btn.closest('.tab-pane') || document;
+  pane.querySelectorAll('.inner-tab').forEach(function(b) { b.classList.remove('active'); });
+  pane.querySelectorAll('.inner-pane').forEach(function(p) { p.classList.remove('active'); p.style.display = 'none'; });
+  btn.classList.add('active');
+  var t = document.getElementById('pane-' + btn.dataset.inner);
+  if (t) { t.classList.add('active'); t.style.display = 'block'; }
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll('.tab-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('active'); p.style.display = 'none'; });
+    btn.classList.add('active');
+    var pane = document.getElementById('tab-' + btn.dataset.tab);
+    pane.classList.add('active');
+    pane.style.display = 'block';
+    window.scrollTo(0, 0);
+  });
+});
+
+document.querySelectorAll('.tab-pane').forEach(function(p, i) {
+  if (i !== 0) p.style.display = 'none';
+});
+document.querySelectorAll('.inner-pane').forEach(function(p) {
+  if (!p.classList.contains('active')) p.style.display = 'none';
+});
+</script>
+</body>
+</html>
